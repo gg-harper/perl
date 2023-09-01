@@ -3,14 +3,14 @@
 use strict;
 use warnings;
 
-sub readFile() {
+sub read_file() {
     open (my $hREAD_FILE, '<', "users");
     my %users = ();
-    while(my $inputLine = <$hREAD_FILE>) {
-        $inputLine = parseLine($inputLine);
-        my ($user_name, $passwd) = split('=', $inputLine);
+    while(my $input_line = <$hREAD_FILE>) {
+        $input_line = parse_line($input_line);
+        my ($user_name, $passwd) = split('=', $input_line);
         chomp($user_name, $passwd);
-        if($user_name eq '' || $passwd eq '' || $inputLine =~ /^#/) {
+        if($user_name eq '' || $passwd eq '' || $input_line =~ /^#/) {
             next;
         }
         $users{$user_name} = $passwd; 
@@ -20,7 +20,7 @@ sub readFile() {
     return %users;
 }
 
-sub parseLine() {
+sub parse_line() {
     my $line = $_[0];
     $line =~ s/^\s*//;
     $line =~ s/\s*=\s*/=/;
@@ -28,22 +28,22 @@ sub parseLine() {
     return $line;
 }
 
-my %users = readFile();
+my %users = read_file();
 
 if (@ARGV > 1) {
 
     (my $name, my $password) = @ARGV;
-    my $isPresent = 0;
+    my $is_present = 0;
 
     while((my $user, my $pass) = each(%users)) {
         chomp($user, $pass);
         if(($user eq $name) && ($pass eq $password)) {
             print("Hi, $name!\n");
-            $isPresent = 1;
+            $is_present = 1;
             last;
         }
     }
-     if (!$isPresent) {
+     if (!$is_present) {
         print("Wrong user or password!\n");
     }
 }
