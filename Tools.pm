@@ -1,9 +1,9 @@
 package Tools;
 
 use Exporter qw(import);
-@EXPORT = qw(vlogin read_user_list);
+@EXPORT = qw(v_login read_user_list);
 
-sub vlogin {
+sub v_login {
     (my $name, my $password) = @_;
     my %users = read_user_list();
     while((my $user, my $pass) = each(%users)) {

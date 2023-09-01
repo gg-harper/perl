@@ -9,7 +9,7 @@ use Tools;
 
 if (@ARGV == 3 && $ARGV[2] eq 'login') {
      (my $name, my $password) = @ARGV;
-    if (vlogin($name, $password)) {
+    if (v_login($name, $password)) {
         print("Welcome, $name!\n");
     }
     else {
