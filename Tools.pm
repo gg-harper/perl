@@ -5,6 +5,9 @@ use Exporter(import);
 sub v_login {
     my($name, $password) = @_;
     my %users = _read_user_list();
+    if(!_check_user($name)) {
+        return 0;
+    }
     if ($users{$name} == $password) {
         return 1;
     }
