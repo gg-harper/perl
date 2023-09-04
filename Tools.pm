@@ -1,7 +1,7 @@
 package Tools;
 
 use Exporter qw(import);
-@EXPORT = qw(v_login read_user_list add_user delete_user);
+@EXPORT = qw(v_login read_user_list add_user delete_user update_user);
 
 sub v_login {
     (my $name, my $password) = @_;
@@ -16,8 +16,7 @@ sub v_login {
 }
 
 sub add_user {
-    (my $name, my $password) = @_;    
-    # open (my $hWRITE_FILE, '>', "users") or die("File not found"); 
+    (my $name, my $password) = @_; 
 
     if(v_login($name, $password)) {
         print("User already exists!\n");
@@ -35,23 +34,48 @@ sub add_user {
 sub delete_user {
     my $user_name = $_[0];
     my $is_deleted = 0;
-    open (my $hWRITE_FILE, '>', "_users") or die("File not found");
+
+    open (my $hWRITE_FILE, '>', "_users");
     open (my $hREAD_FILE, '<', "users") or die("File not found");
-    if(!v_login) {
-        re
+
+    if(!check_user($user_name)) {
+        return 0;
     }
     while(my $user = <$hREAD_FILE>) {
+        if ($user =~ /^\n$/) {
+            next;
+        }
         if($user =~ /$user_name/) {
             $is_deleted = 1;
             next;
         }
-         print($hWRITE_FILE $user);
+        print($hWRITE_FILE $user);
     }
     close($hWRITE_FILE);
     close($hREAD_FILE);
     
     rename("_users", "users");
     return $is_deleted;
+}
+
+sub update_user {
+     (my $name, my $password) = @_;
+
+    if(!check_user($name, $password)) {
+        print("No such user!\n");
+        return 0;
+    }
+    else {
+       my $success = 0;
+       (my $name, my $password) = @_;
+        if ($success = delete_user($name)) {
+            $success = add_user($name, $password);
+        } else {
+            return 0;
+        }
+        
+       return $success;
+    }
 }
 
 sub read_user_list {
@@ -79,4 +103,17 @@ sub parse_line() {
     $line =~ s/\s*=\s*/=/;
     $line =~ s/\s*$//;
     return $line;
+}
+
+sub check_user {
+    my $name = shift(@_);
+    my %users = read_user_list();
+    while((my $user, my $pass) = each(%users)) {
+        chomp($user, $pass);
+        if($user eq $name) {
+            return 1;
+        }
+    }
+    return 0;
+
 }

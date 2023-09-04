@@ -27,6 +27,14 @@ sub main {
                 last;
             }
 
+            if (@ARGV == 3 && $ARGV[2] eq 'update') {
+                (my $name, my $password) = @ARGV;
+                if (update_user($name, $password)) {
+                    print("User info updated successfully!\n");
+                }
+                last;
+            }
+
               if (@ARGV == 2 && $ARGV[1] eq 'delete') {
                 my $name = shift(@ARGV);
                 if (delete_user($name)) {
@@ -38,6 +46,5 @@ sub main {
                 last;
             }
     }
-    
 }
 main();
