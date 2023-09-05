@@ -2,9 +2,10 @@
 
 use strict;
 use warnings;
-use lib ".";
+# use lib ".";
 
 use Tools;
+use Database;
 
 if (@ARGV == 3 && $ARGV[2] eq 'login') {
     my($name, $password) = @ARGV;
@@ -38,4 +39,10 @@ if (@ARGV == 4 && $ARGV[3] eq 'update') {
     else {
         print("No user $name.\n");
     }
+
+   
+}
+if(@ARGV == 1) {
+    print("234");
+    get_connection();
 }
