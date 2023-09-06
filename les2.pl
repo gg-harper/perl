@@ -2,10 +2,11 @@
 
 use strict;
 use warnings;
-# use lib ".";
+use lib ".";
 
-use Tools;
+# use Tools;
 use Database;
+
 
 if (@ARGV == 3 && $ARGV[2] eq 'login') {
     my($name, $password) = @ARGV;

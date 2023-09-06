@@ -5,7 +5,12 @@ use strict;
 use warnings;
 
 my @input_array = qw(10 2 5 1 88 23 82 322 0 4 7 42 6 77 90 14);
+my @stdin_array = split(' ', <STDIN>);
+if(@stdin_array > 0) {
+	@input_array = @stdin_array;
+}
 print("Input array: @input_array\n");
+
 my @result_array = quick_sort(@input_array);
 
 print("Sorted result: @result_array\n");
