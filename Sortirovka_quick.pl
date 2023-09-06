@@ -27,14 +27,10 @@ sub quick_sort {
 	my $i = 1;
 	while($i < scalar(@array)) {
 		if($array[$i] < $pivot) {
-		print("$array[$i]\n");
 		push(@less, $array[$i]);
-			print("less\n");
 		}
 		if($array[$i] >= $pivot) {
-		print("$array[$i]\n");
 		push(@greater, $array[$i]);
-			print("@greater\n");
 		}
 		$i++;
 	}
