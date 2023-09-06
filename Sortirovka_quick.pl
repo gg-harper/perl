@@ -1,6 +1,5 @@
 #!/usr/bin/perl
 
-
 use strict;
 use warnings;
 
@@ -27,16 +26,11 @@ sub quick_sort {
 	my $i = 1;
 	while($i < scalar(@array)) {
 		if($array[$i] < $pivot) {
-		push(@less, $array[$i]);
-		}
-		if($array[$i] >= $pivot) {
-		push(@greater, $array[$i]);
+			push(@less, $array[$i]);
+		} else {
+			push(@greater, $array[$i]);
 		}
 		$i++;
 	}
-	my @result;
-	push(@result, quick_sort(@less));
-	push(@result, $pivot);
-	push(@result, quick_sort(@greater));
-	return @result;
+	return (quick_sort(@less), $pivot, quick_sort(@greater));
 }
