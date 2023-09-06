@@ -4,7 +4,7 @@
 use strict;
 use warnings;
 
-my @input_array = qw(10 2 5 1 88 23 82 322 0 4 7 42 6 77 90 14);
+my @input_array = qw(10 2 5 1 88 23 82 322 0 4 7 42 6 77 90 2 2 2 14);
 my @stdin_array = split(' ', <STDIN>);
 if(@stdin_array > 0) {
 	@input_array = @stdin_array;
@@ -21,20 +21,24 @@ sub quick_sort {
 		return @array;
 	}
 	my $pivot = $array[0];
-
-	my @less = ();
-	my @greater = ();
+	
+	my @less;
+	my @greater;
 	my $i = 1;
 	while($i < scalar(@array)) {
 		if($array[$i] < $pivot) {
-			push(@less, $array[$i]);
+		print("$array[$i]\n");
+		push(@less, $array[$i]);
+			print("less\n");
 		}
-		if($array[$i] > $pivot) {
-			push(@greater, $array[$i]);
+		if($array[$i] >= $pivot) {
+		print("$array[$i]\n");
+		push(@greater, $array[$i]);
+			print("@greater\n");
 		}
 		$i++;
 	}
-	my @result = ();
+	my @result;
 	push(@result, quick_sort(@less));
 	push(@result, $pivot);
 	push(@result, quick_sort(@greater));
