@@ -5,23 +5,15 @@ use strict;
 use warnings;
 use POSIX qw/ceil/;
 
-print("in: \n");
+print("Input tasks: \n");
 my $input = <STDIN>;
-print("out: \n");
+print("Output tasks: \n");
 my $output = <STDIN>;
-print("backlog: \n");
+print("Backlog count: \n");
 my $backlog = <STDIN>;
+my $result = ceil($backlog / (($output  - $input) * 10)); 
 
-my $result = _calculate($input, $output, $backlog);
 my $answer_string = $result > 0 ? "Успеет за $result спринт(ов)" : 'Не успеет';
 
 print("$answer_string");
-print("\n");
-
-
-sub _calculate {
-	my ($in, $out, $backlog) = @_;
-		
-	return ceil($backlog / (($out  - $in) * 10)); 
-}
 
