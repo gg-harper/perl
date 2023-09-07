@@ -4,8 +4,8 @@ use strict;
 use warnings;
 use lib ".";
 
-# use Tools;
-use Database;
+use Tools;
+# use Database;
 
 
 if (@ARGV == 3 && $ARGV[2] eq 'login') {
@@ -42,8 +42,4 @@ if (@ARGV == 4 && $ARGV[3] eq 'update') {
     }
 
    
-}
-if(@ARGV == 1) {
-    print("234");
-    get_connection();
 }

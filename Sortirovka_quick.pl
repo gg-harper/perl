@@ -10,11 +10,11 @@ if(@stdin_array > 0) {
 }
 print("Input array: @input_array\n");
 
-my @result_array = quick_sort(@input_array);
+my @result_array = _quick_sort(@input_array);
 
 print("Sorted result: @result_array\n");
 
-sub quick_sort {
+sub _quick_sort {
 	my @array = @_;
 	if(scalar(@array) < 2) {
 		return @array;
@@ -32,5 +32,5 @@ sub quick_sort {
 		}
 		$i++;
 	}
-	return (quick_sort(@less), $pivot, quick_sort(@greater));
+	return (_quick_sort(@less), $pivot, _quick_sort(@greater));
 }
