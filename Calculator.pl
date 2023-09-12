@@ -6,41 +6,63 @@ print("This is calculator! Enter expression to calculate, one symbol at a time: 
 
 my @input_list;
 my $result = 0;
-
+my $flag = 1;
+my $next_value = 2;
+my $previous_operator = '*';
+print("Enter first value: \n");
+push(@input_list, '(');
 while(1) {
-	print("Enter next symbol: \n");
+	
 	my $input = <STDIN>;
 	chomp($input);
 	if($input eq '=') {
 		system('clear');
-		#_print_expression();
+		if ($flag == 1) {
+			shift(@input_list);
+		}
+		push(@input_list, '=');
+		print("@input_list");
+		print("\n");
 		last;
 	}
-	if(scalar(@input_list) == 0) {
-		if($input !~ /\d+/) {
+	if(scalar(@input_list) == 1) {
+		if($input !~ /^\d+$/) {
 			print("Start with digit, please!\n");
 			next;
 		}
 		push(@input_list, $input);
-		$result = $input;
+		$result = $input;	
+		print("Which arithmetic operation (+|-|*|/| = for finish) you require?\n");
 		next;
 	}
 	if(!_check_symbol($input, @input_list)) {
 		print("Wrong symbol!\n");
+		pop(@input_list);
+		next;
+	}
+	
+	if (_is_operator($input)) {
+		if(_is_previous_operator_less_pri($previous_operator, $input)) {
+			push(@input_list, ')');	
+			$flag = 0;
+			print("@input_list\n");
+		}
+
+		push(@input_list, $input);
+		$previous_operator = $input;
+		print("Enter $next_value value: \n");
 		next;
 	}
 	push(@input_list, $input);
-	
-	if (_is_operator($input)) {
-		next;
-	}
 	if(!_check_division_by_zero(@input_list)) {
 		pop(@input_list);
 		next;
 	}	
 	$result = _calculate(@input_list, $result);
-	
+	print("Which arithmetic operation (+|-|*|/| = for finish) you require?\n");
+	$next_value++;
 }
+
 
 
 sub _is_operator {
@@ -61,6 +83,7 @@ sub _check_symbol {
 		return 0;
 	}
 	if(($symbol =~ /\d+/ && $previous_symbol =~ /\d+/)
+
 		|| ($symbol =~ /[\+\/\*-]/ && $previous_symbol =~ /[\+\/\*-]/)) {
 		return 0;
 	}
@@ -71,6 +94,7 @@ sub _check_division_by_zero {
 	my $operator = pop;
 	if($operand == 0 && $operator eq '/') {
 		print("Division by 0 is restricted!\n");
+		print("Enter $nextValue value: \n");
 		return 0;
 	}
 	return 1;
@@ -90,51 +114,15 @@ sub _calculate {
 	} else {
 		print("Wrong operator!\n");
 	}
-	print(" = $result\n");
+	print("Pre-result = $result\n");
 	return $result;
 }
-sub _print_expression {
-	my @to_print;
-	my $first_operand = shift;
-	my $first_operator = shift;
-	my $second_operand = shift;
-	my @expression = @_;
-	
-	if(_is_operator(pop(@_))) {
-		pop(@expression);
-	}
 
-	my $next_operator;
-	
-	for $element (@expression) {
-		#		if(!_is_operator($element)) {
-			#push(@to_print, $element);	
-			#		}
-		if(!_is_operator_less_or_same_pri($element)) {
-			push(@to_print, '(');
-			push(@to_print, $first_operand);
-			push(@to_print, $operator);
-			push(@to_print, $second_operand);
-			push(@to_print, ')');
-		}
-		$first_operand = $second_operand;
-		$first_operator = $element;
-		
-
-	}
-}
-
-sub _is_operator_less_or_same_pri {
-	my $first_operator = shift;
-	my $second_operator = shift;
-	if($first_operator =~ /[\/\*]/) {
-		return 1;
-	}
-	if($first_operator =~ /[\+-]/ && $second_operator =~ /[\+-]/) {
+sub _is_previous_operator_less_pri {
+	my $previous_operator = shift;
+	my $current_operator = shift;
+	if($previous_operator =~ /[\+-]/ && $current_operator =~ /[\*\/]/) {
 		return 1;
 	}
 	return 0;
 }
-	
-
-
