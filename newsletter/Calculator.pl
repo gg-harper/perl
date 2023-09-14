@@ -38,6 +38,7 @@ while( 1 ) {
 	}
 	if( !_check_symbol( $input, @input_list ) ) {
 		print( "Wrong symbol!\n" );
+		#pop( @input_list );
 		next;
 	}
 	
