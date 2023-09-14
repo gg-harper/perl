@@ -51,8 +51,12 @@ while( 1 ) {
 		$previous_operator = $input;
 		print( "Enter $next_value value: \n" );
 		next;
+	} 
+	if( _is_digit($input) && $input < 0) {
+		push( @input_list, ("(", $input, ")"));
+	} else {
+		push( @input_list, $input );
 	}
-	push( @input_list, $input );
 	if( !_check_division_by_zero( @input_list ) ) {
 		pop( @input_list );
 		next;
@@ -66,14 +70,14 @@ while( 1 ) {
 
 sub _is_operator {
 	my $symbol = shift;
-	if( $symbol =~ /[\+\*\/-]/ ) {
+	if( $symbol =~ /^[\+\*\/-]$/ ) {
 		return 1;
 	}
 	return 0;
 }
 sub _is_digit {
 	my $symbol = shift;
-	if( $symbol =~ /^\d+$/ ) {
+	if( $symbol =~ /^-?\d+$/ ) {
 		return 1;
 	}
 	return 0;
@@ -88,9 +92,9 @@ sub _check_symbol {
 	if( !_is_digit( $symbol ) && !_is_operator( $symbol ) ) {
 		return 0;
 	}
-	if( ( $symbol =~ /\d+/ && $previous_symbol =~ /\d+/ )
+	if( ( _is_digit( $symbol ) && _is_digit( $previous_symbol ) )
 
-		|| ( $symbol =~ /[\+\/\*-]/ && $previous_symbol =~ /[\+\/\*-]/ ) ) {
+		|| ( _is_operator( $symbol ) && _is_operator( $previous_symbol ) ) ) {
 		return 0;
 	}
 	return 1;
@@ -110,7 +114,16 @@ sub _calculate {
 	my $result = shift;
 	my @input_list = @_;
 	my $operand = pop( @input_list );
-	my $operator = pop( @input_list );
+	my $operator;
+
+	if($operand eq ')') {
+		$operand = pop( @input_list );
+		pop( @input_list );
+		$operator = pop( @input_list );
+	} else {
+		$operator = pop( @input_list );
+	}
+
 	if( $operator eq '+' ) {
 		$result += $operand;
 	} elsif( $operator eq '-' ){
