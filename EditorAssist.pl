@@ -4,62 +4,92 @@ use warnings;
 
 my $input_file_name = shift( @ARGV );
 my $dict_name = 'dictionary';
-my @words = _read_input_file( $input_file_name );
+my @words = _get_text( $input_file_name );
 my @dictionary = _read_dictionary( $dict_name );
-print("Word count is: $#words\n");
-print("\n");
+@words = _parse_text(@words);
+print("Word count is: $#words\n\n");
 print("Repeated words are: \n");
 _count_repeated_words( @words );
-print("\n");
-_check_obscenities(\@dictionary, \@words);
-print("\n");
+_check_obscenities( \@dictionary, \@words );
 
-sub _read_input_file {
-	my $file_name = 'newsletter/'.shift;
-	#	print($file_name);
-	my @word_list;
-	open( my $hREAD_FILE, '<', $file_name ) or die( 'File not found!' );
-	for my $line( <$hREAD_FILE> ) {
-		push( @word_list, split( ' ', $line ) );
+sub _get_text {
+	my $filename = 'newsletter/'.shift;
+	my @raw_text = _read_file($filename);
+	my @text;
+	for my $line( @raw_text ) {
+		push( @text, split( ' ', $line ) );
 	}
-	close($hREAD_FILE);
-	return @word_list;
+	return @text;
+}
+sub _parse_text {
+	my @words = @_;
+	my @output;
+	my $previous_word;
+	my $flag = 0;
+	for ( my $i = 0; $i <= $#words; $i++) {
+		if( $words[$i] =~ /\-$/ ) {
+			$previous_word = $words[$i];
+			$previous_word =~ s/\-//g;
+			$flag = 1;
+			next;
+		}
+		if( $flag ) {
+			my $word = $previous_word . $words[$i];
+			$flag = 0;
+			push( @output, $word);
+		} else {
+			push( @output, $words[$i]);
+		}
+	}
+	return @output;
 }
 
 sub _read_dictionary {
-
-	my $file_name = shift;
-	my @dictionary;
-	open( my $hREAD_FILE, '<', $file_name ) or die( 'File not found!' );
-	for my $line( <$hREAD_FILE> ) {
+	my $filename = shift;
+	my @dictionary = _read_file( $filename );
+	my @output;
+	for my $line( @dictionary ) {
 		chomp($line);
-		push( @dictionary, $line );
+		push( @output, lc( $line ) );
 	}
-	close($hREAD_FILE);
-	return @dictionary;
+	return @output;
 }
+
 sub _check_obscenities {
 	my @dict = @{$_[0]};
 	my @words = @{$_[1]};
-	my @result;
-	for my $word( @dict ) {
-		 push( @result, _uniq( grep( $_ eq $word, @words ) ) );	
+	my %dict;
+	my @isect;
+	for my $element ( @dict ) {
+		$dict{$element} = 0;
 	}
-	print("Found following obcene words: @result\n");
+
+	for my $element ( @words ) {
+		if( exists( $dict{$element}) && $dict{$element} == 0 ) {
+			$dict{$element} = 1;
+			push( @isect, $element );
+		}
+	}
+	print("Found following obcene words: @isect \n\n");
 }
-sub _uniq {
-	my %seen;
-	return grep( { !$seen{$_}++ } @_);
+
+sub _read_file {
+	my $filename = shift;
+	my @raw_text;
+	open( my $hREAD_FILE, '<', $filename);
+	while (my $line = <$hREAD_FILE> ) {
+		push( @raw_text, lc( $line ));
+	}
+	return @raw_text;
 }
 
 sub _count_repeated_words {
 	my @words = @_;
 	my %repeated_words; 
 	for my $word( @words ) {
-		$word =~ s/[^a-zA-Z0-9А-Яа-я]|['`’]s\b//g;
+		$word =~ s/[^a-zA-Z0-9А-Яа-я\-]|['`’]s\b//g;
 		if( exists( $repeated_words{$word} ) ) {
-			$repeated_words{$word} = $repeated_words{$word} + 1;
-			
+			$repeated_words{$word} = $repeated_words{$word} + 1;			
 		} else {
 			$repeated_words{$word} = 1;
 		}
@@ -69,4 +99,5 @@ sub _count_repeated_words {
 			print("$word - $repeated_words{$word}\n");
 		}
 	}	
+	print("\n");
 }
