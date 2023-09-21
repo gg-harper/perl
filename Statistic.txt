@@ -1,0 +1,6 @@
+Ivanov^100^50
+Petrov^100^15
+Sidorov^100^5
+Vasilieva^100^5
+Orlova^100^10
+Sokolova^100^0
